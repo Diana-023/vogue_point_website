@@ -3,83 +3,52 @@
 Система состоит из трех независимых проектов в монорепозитории:
 ### frontend - клиентское SPA интернет-магазина
 ```
-vogue_point/
+project/frontend/
 ├── public/
 │   └── vite.svg
 ├── src/
 │   ├── assets/
-|   |   ├── react.svg
-│   │   ├── 1.0.jpg
-│   │   ├── 2.0.jpg
-│   │   └── 2.1.jpg
-│   ├── components/     
+│   │   └── react.svg  
 │   ├── pages/         
+│   │   ├── Basket/
+│   │   ├── Card/
+│   │   ├── Contacts/
 │   │   ├── Home/
-│   │   ├── Catalog/
-│   │   ├── Product/
-│   │   └── Cart/
+│   │   ├── Input/
+│   │   ├── MediumCardPage/
+│   │   └── ProductCardPage/
 │   ├── App.css  
 │   ├── App.test.tsx
 │   ├── App.tsx  
-│   ├── index.css        
-│   └── main.tsx
+│   ├── index.css     
+│   ├── main.tsx     
+│   └── setupTests.ts
 ├── .gitignore
 ├── eslint.config.js
 ├── index.html
 ├── jest.config.ts
 ├── package.json
 ├── vite.config.js
+├── tsconfig.app.json
 ├── tsconfig.node.json
 ├── tsconfig.ts
 └── tsconfig.json
 ```
-### admin-panel - административная панель
-```
-admin-panel/
-├── public/
-│   └── vite.svg
-├── src/
-│   ├── assets/
-│   │   └── react.svg
-│   ├── components/     
-│   ├── pages/         
-│   │   ├── Login/
-│   │   ├── Dashboard/
-│   │   ├── ProductsManagement/
-│   │   ├── OrdersManagement/
-│   │   └── Inventory/
-│   ├── App.css  
-│   ├── App.test.tsx
-│   ├── App.tsx  
-│   ├── index.css        
-│   └── main.tsx
-├── .gitignore
-├── eslint.config.js
-├── index.html
-├── jest.config.ts
-├── package.json
-├── vite.config.js
-├── tsconfig.node.json
-├── tsconfig.ts
-└── tsconfig.json
-```
+
 ### ui-library - библиотека UI-компонентов
 ```
-ui-library/
+project/ui-library/
 ├── src/
-│   ├── Card/
-│   │   ├── Card.tsx
-│   │   ├── Card.module.css
-│   │   └── Card.test.tsx
-│   ├── ProductCard/
-│   │   ├── ProductCard.tsx
-│   │   ├── ProductCard.module.css
-│   │   └── ProductCard.test.tsx
-│   ├── Basket/
-│   │   ├── Basket.tsx
-│   │   ├── Basket.module.css
-│   │   └── Basket.test.tsx
-│   └── index.ts      
+│   ├── components/
+│   │   ├── AboutLink/
+│   │   ├── Basket/
+│   │   ├── Card/
+│   │   ├── Contacts/
+│   │   ├── Input/
+│   │   ├── MediumCard/
+│   │   └── AboutLink/
+│   ├── index.ts
+│   └── setupTests.ts     
 ├── package.json
 ├── .gitignore
 ├── eslint.config.js
@@ -102,32 +71,29 @@ ui-library/
 - jest ^30.2.0 - Тестирование
 
 ## Компоненты
-- Home - Главная страница
-- Input - Авторизация/регистрация
-- Card - Каталог товаров
-- Basket - Корзина товаров
-- ProductCard - Карточка товара
-- Order - Оформление заказа
+- AboutLink - Кнопка "О нас"
+- Basket - Корзина покупок
+- Card - Категория товаров
+- Contacts - Контактная информация
+- Input - Форма авторизации
+- MediumCardPage - Каталог (карточки товаров)
+- ProductCardPage - Карточка товара
 
 ## Структура роутинга приложений
 ### Клиентское приложение
 ```
 Главная страница
-├── Каталог товаров
-│   ├── Категория 1
-│   ├── Категория 2
-│   └── ...
-├── Карточка товара
-└── Корзина покупок
-```
-### Административная панель
-```
-Страница входа
-├── Дашборд
-├── Управление товарами
-│   ├── Добавление товара
-│   ├── Редактирование товара
-│   └── Управление складом
-├── Управление заказами
-└── Аналитика продаж
+├── О нас
+├── Категории товаров
+│   ├── Каталог 1
+│   │   └── Карточка товара
+│   ├── Каталог 2
+│   │   └── Карточка товара
+│   ├── Каталог 3
+│   │   └── Карточка товара
+│   └── Каталог 4
+│   │   └── Карточка товара
+├── Авторизация/Вход
+├── Корзина покупок
+└── Контактная информация
 ```
