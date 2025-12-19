@@ -1,0 +1,73 @@
+.medium-card {
+  width: 200px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.medium-card__image {
+  width: 100%;
+  height: 180px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.medium-card__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.medium-card__info {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.medium-card__text {
+  flex: 1;
+}
+
+.medium-card__title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  margin: 0 0 4px 0;
+  line-height: 1.3;
+}
+
+.medium-card__price {
+  font-size: 16px;
+  font-weight: 600;
+  color: #222;
+  margin: 0;
+}
+
+.medium-card__favorite-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: #f5f5f5;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  padding: 0;
+}
+
+.medium-card__favorite-btn--active .heart-icon {
+  color: #6d0000;
+}
+
+.heart-icon {
+  font-size: 18px;
+  transition: color 0.2s ease;
+}
