@@ -48,26 +48,3 @@
   color: #222;
   margin: 0;
 }
-
-.medium-card__favorite-btn {
-  width: 32px;
-  height: 32px;
-  border: none;
-  background: #f5f5f5;
-  border-radius: 50%;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-  padding: 0;
-}
-
-.medium-card__favorite-btn--active .heart-icon {
-  color: #6d0000;
-}
-
-.heart-icon {
-  font-size: 18px;
-  transition: color 0.2s ease;
-}

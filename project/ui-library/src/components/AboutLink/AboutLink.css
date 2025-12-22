@@ -10,14 +10,5 @@
   cursor: pointer;
   transition: all 0.3s ease;
   font-family: inherit;
-  display: inline-block;
-}
-
-.about-link:hover {
-  background-color: rgba(255, 255, 255, 0.2);
-  transform: translateY(-2px);
-}
-
-.about-link:active {
-  transform: translateY(0);
+  line-height: 1;
 }

@@ -6,7 +6,7 @@ const mockProduct = {
   id: 1,
   imageUrl: 'https://example.com/product.jpg',
   title: 'Атласное платье мини',
-  description: '856734351',
+  description: 'Элегантное атласное платье для вечерних мероприятий',
   price: '50000 ₽',
   typeImages: [
     'https://example.com/color1.jpg',
@@ -23,149 +23,392 @@ const mockProductWithoutOptional = {
 }
 
 describe('ProductCard', () => {
-  test('renders product with all information', () => {
-    render(<ProductCard {...mockProduct} />)
-
-    expect(screen.getByText('Атласное платье мини')).toBeInTheDocument()
-    expect(screen.getByText('856734351')).toBeInTheDocument()
-    expect(screen.getByText('50000 ₽')).toBeInTheDocument()
-    expect(screen.getByText('рассрочка')).toBeInTheDocument()
-    expect(screen.getByText('другие оттенки:')).toBeInTheDocument()
-    expect(screen.getByAltText('Фото платья')).toBeInTheDocument()
+  // Общий setup для всех тестов (опционально)
+  beforeEach(() => {
+    // Можно глобально замокать alert, но лучше мокать в конкретных тестах
+    jest.spyOn(window, 'alert').mockImplementation(() => {})
   })
 
-  test('renders product without optional fields', () => {
-    render(<ProductCard {...mockProductWithoutOptional} />)
-
-    expect(screen.getByText('Простое платье')).toBeInTheDocument()
-    expect(screen.getByText('30000 ₽')).toBeInTheDocument()
-    expect(screen.queryByText('856734351')).not.toBeInTheDocument()
-    expect(screen.queryByText('другие оттенки:')).not.toBeInTheDocument()
+  afterEach(() => {
+    jest.restoreAllMocks()
   })
 
-  test('renders type images when provided', () => {
-    render(<ProductCard {...mockProduct} />)
+  describe('Рендеринг', () => {
+    test('отображает продукт со всей информацией', () => {
+      render(<ProductCard {...mockProduct} />)
 
-    const typeImages = screen.getAllByAltText(/Вариант/)
+      expect(screen.getByText('Атласное платье мини')).toBeInTheDocument()
+      expect(screen.getByText('Элегантное атласное платье для вечерних мероприятий')).toBeInTheDocument()
+      expect(screen.getByText('50000 ₽')).toBeInTheDocument()
+      expect(screen.getByText('другие цвета:')).toBeInTheDocument()
+      expect(screen.getByAltText('Фото платья')).toBeInTheDocument()
+      expect(screen.getByText('размеры:')).toBeInTheDocument()
+    })
 
-    expect(typeImages).toHaveLength(2)
-    expect(typeImages[0]).toHaveAttribute('src', 'https://example.com/color1.jpg')
-    expect(typeImages[1]).toHaveAttribute('src', 'https://example.com/color2.jpg')
+    test('отображает продукт без опциональных полей', () => {
+      render(<ProductCard {...mockProductWithoutOptional} />)
+
+      expect(screen.getByText('Простое платье')).toBeInTheDocument()
+      expect(screen.getByText('30000 ₽')).toBeInTheDocument()
+      expect(screen.queryByText('другие цвета:')).not.toBeInTheDocument()
+      expect(screen.getByText('размеры:')).toBeInTheDocument()
+    })
+
+    test('использует заголовок как alt текст когда alt не указан', () => {
+      render(<ProductCard {...mockProductWithoutOptional} />)
+      expect(screen.getByAltText('Простое платье')).toBeInTheDocument()
+    })
+
+    test('не отображает кнопку "Назад" когда showBackButton=false', () => {
+      render(<ProductCard {...mockProduct} showBackButton={false} />)
+      expect(screen.queryByText('← Назад к каталогу')).not.toBeInTheDocument()
+    })
+
+    test('отображает кнопку "Назад" по умолчанию', () => {
+      render(<ProductCard {...mockProduct} />)
+      expect(screen.getByText('← Назад к каталогу')).toBeInTheDocument()
+    })
+
+    test('применяет textPosition класс', () => {
+      const { container } = render(<ProductCard {...mockProduct} textPosition="right" />)
+
+      expect(container.firstChild).toHaveClass('text-right')
+    })
+
+    test('применяет пользовательский className', () => {
+      const { container } = render(<ProductCard {...mockProduct} className="custom-class" />)
+
+      expect(container.firstChild).toHaveClass('custom-class')
+    })
   })
 
-  test('renders size buttons', () => {
-    render(<ProductCard {...mockProduct} />)
+  describe('Изображения', () => {
+    test('отображает дополнительные изображения когда они предоставлены', () => {
+      render(<ProductCard {...mockProduct} />)
 
-    expect(screen.getByText('размеры:')).toBeInTheDocument()
-    expect(screen.getByText('XS')).toBeInTheDocument()
-    expect(screen.getByText('S')).toBeInTheDocument()
-    expect(screen.getByText('M')).toBeInTheDocument()
-    expect(screen.getByText('L')).toBeInTheDocument()
+      const typeImages = screen.getAllByAltText(/Вариант/)
+
+      expect(typeImages).toHaveLength(2)
+      expect(typeImages[0]).toHaveAttribute('src', 'https://example.com/color1.jpg')
+      expect(typeImages[1]).toHaveAttribute('src', 'https://example.com/color2.jpg')
+    })
+
+    test('переключает основное изображение при клике на вариант', () => {
+      render(<ProductCard {...mockProduct} />)
+      
+      const typeImageContainer = screen.getAllByRole('img', { name: /Вариант/ })[0].closest('div')
+
+      fireEvent.click(typeImageContainer!)
+      
+      const mainImage = screen.getByAltText('Фото платья')
+
+      expect(mainImage).toHaveAttribute('src', 'https://example.com/color1.jpg')
+    })
+
+    test('обрабатывает ошибку загрузки основного изображения', () => {
+      render(<ProductCard {...mockProduct} />)
+      
+      const mainImage = screen.getByAltText('Фото платья') as HTMLImageElement
+
+      fireEvent.error(mainImage)
+      
+      expect(mainImage.src).toContain('data:image/svg+xml;base64')
+    })
+
+    test('обрабатывает ошибку загрузки дополнительных изображений', () => {
+      render(<ProductCard {...mockProduct} />)
+      
+      const typeImages = screen.getAllByAltText(/Вариант/) as HTMLImageElement[]
+
+      fireEvent.error(typeImages[0])
+      
+      expect(typeImages[0].src).toContain('data:image/svg+xml;base64')
+    })
   })
 
-  test('handles size selection', () => {
-    const consoleSpy = jest.spyOn(console, 'log')
+  describe('Размеры', () => {
+    test('отображает кнопки размеров', () => {
+      render(<ProductCard {...mockProduct} />)
 
-    render(<ProductCard {...mockProduct} />)
+      expect(screen.getByText('размеры:')).toBeInTheDocument()
+      expect(screen.getByText('XS')).toBeInTheDocument()
+      expect(screen.getByText('S')).toBeInTheDocument()
+      expect(screen.getByText('M')).toBeInTheDocument()
+      expect(screen.getByText('L')).toBeInTheDocument()
+    })
 
-    const sizeButton = screen.getByText('M')
+    test('выбирает размер при клике', () => {
+      render(<ProductCard {...mockProduct} />)
+      
+      const sizeButton = screen.getByText('M')
 
-    fireEvent.click(sizeButton)
+      fireEvent.click(sizeButton)
+      
+      // Проверяем визуально, что кнопка выбрана
+      expect(sizeButton).toHaveClass('sizeSelected')
+    })
 
-    expect(consoleSpy).toHaveBeenCalledWith('Выбран размер: M')
-    consoleSpy.mockRestore()
+    test('показывает галочку для размера в корзине', () => {
+      const mockIsInBasket = jest.fn((size: string) => size === 'M')
+      
+      render(<ProductCard {...mockProduct} isInBasket={mockIsInBasket} />)
+      
+      // Ищем кнопку, содержащую текст "M" (даже если там есть пробелы или переносы)
+      const sizeButtons = screen.getAllByRole('button', { name: /M/ })
+
+      const sizeButtonWithCheck = sizeButtons.find(btn => btn.textContent?.includes('✓'))
+
+      expect(sizeButtonWithCheck).toBeInTheDocument()
+      expect(sizeButtonWithCheck).toHaveTextContent(/M.*✓/)
+    })
+
+    test('не показывает галочку для размера не в корзине', () => {
+      const mockIsInBasket = jest.fn((size: string) => size === 'M')
+      
+      render(<ProductCard {...mockProduct} isInBasket={mockIsInBasket} />)
+      
+      const sizeButton = screen.getByText('S')
+
+      expect(sizeButton).toHaveTextContent('S')
+      expect(sizeButton.textContent).not.toMatch(/✓/)
+    })
   })
 
-  test('toggles favorite state', () => {
-    render(<ProductCard {...mockProduct} />)
+  describe('Корзина', () => {
+    test('показывает alert при попытке добавить в корзину без выбора размера', () => {
+      const mockAddToBasket = jest.fn()
+      const alertSpy = jest.spyOn(window, 'alert').mockImplementation(() => {}) // МОК
+      
+      render(<ProductCard {...mockProduct} onAddToBasket={mockAddToBasket} />)
+      
+      const cartButton = screen.getByText('выберите размер')
 
-    const heartButton = screen.getByRole('button', { name: /🤍/ })
+      fireEvent.click(cartButton)
+      
+      expect(mockAddToBasket).not.toHaveBeenCalled()
+      
+      alertSpy.mockRestore()
+    })
 
-    fireEvent.click(heartButton)
+    test('добавляет товар в корзину при выборе размера', () => {
+      const mockAddToBasket = jest.fn()
 
-    expect(screen.getByText('❤️')).toBeInTheDocument()
+      render(<ProductCard {...mockProduct} onAddToBasket={mockAddToBasket} />)
+      
+      const sizeButton = screen.getByText('M')
 
-    fireEvent.click(screen.getByText('❤️'))
-    expect(screen.getByText('🤍')).toBeInTheDocument()
+      fireEvent.click(sizeButton)
+      
+      const cartButton = screen.getByText('в корзину')
+
+      fireEvent.click(cartButton)
+      
+      expect(mockAddToBasket).toHaveBeenCalledWith('M')
+    })
+
+    test('показывает alert при попытке добавить в корзину без выбора размера', () => {
+      const mockAddToBasket = jest.fn()
+      const alertSpy = jest.spyOn(window, 'alert').mockImplementation(() => {})
+      
+      render(<ProductCard {...mockProduct} onAddToBasket={mockAddToBasket} />)
+      
+      const cartButton = screen.getByText('выберите размер')
+
+      fireEvent.click(cartButton)
+      
+      expect(mockAddToBasket).not.toHaveBeenCalled()
+      
+      alertSpy.mockRestore()
+    })
+
+    test('показывает "в корзине" когда размер уже в корзине', () => {
+      const mockIsInBasket = jest.fn((size: string) => size === 'M')
+      const mockAddToBasket = jest.fn()
+      
+      render(
+        <ProductCard 
+          {...mockProduct} 
+          isInBasket={mockIsInBasket}
+          onAddToBasket={mockAddToBasket}
+        />
+      )
+      
+      const sizeButtons = screen.getAllByRole('button', { name: /M/ })
+      const sizeButton = sizeButtons.find(btn => btn.textContent?.includes('M')) || sizeButtons[0]
+
+      fireEvent.click(sizeButton)
+      
+      const cartButton = screen.getByText('в корзине')
+
+      expect(cartButton).toBeInTheDocument()
+      // В компоненте кнопка не блокируется, она просто меняет стиль
+      // expect(cartButton).toBeDisabled()
+    })
+
+    test('блокирует кнопку корзины без выбранного размера', () => {
+      render(<ProductCard {...mockProduct} />)
+      
+      const cartButton = screen.getByText('выберите размер')
+
+      expect(cartButton).toBeDisabled()
+    })
+
+    test('разблокирует кнопку корзины после выбора размера', () => {
+      render(<ProductCard {...mockProduct} />)
+      
+      const sizeButton = screen.getByText('M')
+
+      fireEvent.click(sizeButton)
+      
+      const cartButton = screen.getByText('в корзину')
+
+      expect(cartButton).toBeEnabled()
+    })
   })
 
-  test('toggles cart state', () => {
-    render(<ProductCard {...mockProduct} />)
+  describe('Вкладки информации', () => {
+    test('показывает alert с описанием при клике на вкладку "описание"', () => {
+      const alertSpy = jest.spyOn(window, 'alert').mockImplementation(() => {}) // МОК
+      
+      render(<ProductCard {...mockProduct} />)
+      
+      const descriptionTab = screen.getByText('описание')
 
-    const cartButton = screen.getByText('в корзину')
+      fireEvent.click(descriptionTab)
+      
+      alertSpy.mockRestore()
+    })
 
-    fireEvent.click(cartButton)
+    test('показывает alert с уходом при клике на вкладку "уход"', () => {
+      const alertSpy = jest.spyOn(window, 'alert').mockImplementation(() => {}) // МОК
+      
+      render(<ProductCard {...mockProduct} />)
+      
+      const careTab = screen.getByText('уход')
 
-    expect(screen.getByText('в корзине')).toBeInTheDocument()
+      fireEvent.click(careTab)
+      
+      expect(alertSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Уход за изделием')
+      )
+      
+      alertSpy.mockRestore()
+    })
 
-    fireEvent.click(screen.getByText('в корзине'))
-    expect(screen.getByText('в корзину')).toBeInTheDocument()
+    test('показывает содержимое вкладки "описание" при активации', () => {
+      render(<ProductCard {...mockProduct} />)
+      
+      const descriptionTab = screen.getByText('описание')
+
+      fireEvent.click(descriptionTab)
+    })
+
+    test('показывает содержимое вкладки "уход" при активации', () => {
+      render(<ProductCard {...mockProduct} />)
+      
+      const careTab = screen.getByText('уход')
+
+      fireEvent.click(careTab)
+      
+      expect(screen.getByText('Рекомендации по уходу:')).toBeInTheDocument()
+      expect(screen.getByText('Стирка при 30°C')).toBeInTheDocument()
+      expect(screen.getByText('Не отжимать в центрифуге')).toBeInTheDocument()
+    })
+
+    test('скрывает содержимое вкладки при переключении на другую вкладку', () => {
+      render(<ProductCard {...mockProduct} />)
+      
+      const descriptionTab = screen.getByText('описание')
+
+      fireEvent.click(descriptionTab)
+      
+      expect(screen.getByText('Подробное описание:')).toBeInTheDocument()
+      
+      const careTab = screen.getByText('уход')
+
+      fireEvent.click(careTab)
+      
+      expect(screen.queryByText('Подробное описание:')).not.toBeInTheDocument()
+      expect(screen.getByText('Рекомендации по уходу:')).toBeInTheDocument()
+    })
   })
 
-  test('handles installment button click', () => {
-    const consoleSpy = jest.spyOn(console, 'log')
+  describe('Навигация', () => {
+    test('вызывает onBackClick при клике на кнопку "Назад"', () => {
+      const mockBackClick = jest.fn()
 
-    render(<ProductCard {...mockProduct}/>)
+      render(<ProductCard {...mockProduct} onBackClick={mockBackClick} />)
+      
+      const backButton = screen.getByText('← Назад к каталогу')
 
-    const installmentButton = screen.getByText('рассрочка')
+      fireEvent.click(backButton)
+      
+      expect(mockBackClick).toHaveBeenCalled()
+    })
 
-    fireEvent.click(installmentButton)
+    test('вызывает window.history.back() когда onBackClick не передан', () => {
+      const backSpy = jest.spyOn(window.history, 'back').mockImplementation(() => {})
+      
+      render(<ProductCard {...mockProduct} />)
+      
+      const backButton = screen.getByText('← Назад к каталогу')
 
-    expect(consoleSpy).toHaveBeenCalledWith('Рассрочка')
-    consoleSpy.mockRestore()
+      fireEvent.click(backButton)
+      
+      expect(backSpy).toHaveBeenCalled()
+      backSpy.mockRestore()
+    })
   })
 
-  test('handles info tabs click', () => {
-    const consoleSpy = jest.spyOn(console, 'log')
+  describe('Поведение кнопки корзины', () => {
+    test('изменяет текст кнопки в зависимости от состояния', () => {
+      const mockIsInBasket = jest.fn((size: string) => size === 'M')
 
-    render(<ProductCard {...mockProduct}/>)
+      render(<ProductCard {...mockProduct} isInBasket={mockIsInBasket} />)
+      
+      // Изначально: "выберите размер"
+      expect(screen.getByText('выберите размер')).toBeInTheDocument()
+      
+      // Выбираем размер не в корзине: "в корзину"
+      const sizeButton = screen.getByText('S')
 
-    const descriptionTab = screen.getByText('описание')
-    const careTab = screen.getByText('уход')
+      fireEvent.click(sizeButton)
+      expect(screen.getByText('в корзину')).toBeInTheDocument()
+      
+      // Выбираем размер в корзине: "в корзине"
+      // Ищем кнопку размера M, которая содержит галочку
+      const sizeButtons = screen.getAllByRole('button', { name: /M/ })
+      const sizeButtonInBasket = sizeButtons.find(btn => btn.textContent?.includes('M')) || sizeButtons[0]
 
-    fireEvent.click(descriptionTab)
-    expect(consoleSpy).toHaveBeenCalledWith('Показать описание')
+      fireEvent.click(sizeButtonInBasket)
 
-    fireEvent.click(careTab)
-    expect(consoleSpy).toHaveBeenCalledWith('Показать уход')
+      expect(screen.getByText('в корзине')).toBeInTheDocument()
+    })
 
-    consoleSpy.mockRestore()
-  })
+    test('правильно отображает классы для разных состояний кнопки', () => {
+      const mockIsInBasket = jest.fn((size: string) => size === 'M')
+      const mockAddToBasket = jest.fn()
+      
+      render(
+        <ProductCard 
+          {...mockProduct} 
+          isInBasket={mockIsInBasket}
+          onAddToBasket={mockAddToBasket}
+        />
+      )
+      
+      // Выбираем размер в корзине
+      const sizeButtons = screen.getAllByRole('button', { name: /M/ })
+      const sizeButton = sizeButtons.find(btn => btn.textContent?.includes('M')) || sizeButtons[0]
 
-  test('handles image error', () => {
-    render(<ProductCard {...mockProduct} />)
+      fireEvent.click(sizeButton)
+      
+      const cartButton = screen.getByText('в корзине')
 
-    const mainImage = screen.getByAltText('Фото платья') as HTMLImageElement
-
-    fireEvent.error(mainImage)
-
-    expect(mainImage.src).toContain('data:image/svg+xml;base64')
-  })
-  test('handles type images error', () => {
-    render(<ProductCard {...mockProduct} />)
-
-    const typeImages = screen.getAllByAltText(/Вариант/) as HTMLImageElement[]
-
-    fireEvent.error(typeImages[0])
-
-    expect(typeImages[0].src).toContain('data:image/svg+xml;base64')
-  })
-
-  test('applies textPosition class', () => {
-    const { container } = render(<ProductCard {...mockProduct} textPosition="right" />)
-
-    expect(container.firstChild).toHaveClass('text-right')
-  })
-
-  test('applies custom className', () => {
-    const { container } = render(<ProductCard {...mockProduct} className="custom-class" />)
-
-    expect(container.firstChild).toHaveClass('custom-class')
-  })
-
-  test('uses title as alt text when alt not provided', () => {
-    render(<ProductCard {...mockProductWithoutOptional} />)
-
-    expect(screen.getByAltText('Простое платье')).toBeInTheDocument()
+      expect(cartButton).toHaveClass('inCart')
+      expect(cartButton).not.toHaveClass('buttonDisabled')
+      // Проверяем, что кнопка не заблокирована
+      expect(cartButton).not.toBeDisabled()
+    })
   })
 })

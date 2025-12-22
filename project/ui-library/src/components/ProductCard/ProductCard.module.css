@@ -9,7 +9,7 @@
   overflow: hidden;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  background: #faf6ff;
+  background: #d6d0da !important;
 }
 
 .fullPageCard {
@@ -76,7 +76,7 @@
 }
 
 .backButton {
-  background: none;
+  background: #d6d0da;
   border: 1px solid #ddd;
   padding: 8px 16px;
   border-radius: 4px;
@@ -87,7 +87,7 @@
 }
 
 .backButton:hover {
-  background-color: #f5f5f5;
+  background-color: #715a7b;
   border-color: #ccc;
 }
 
@@ -103,7 +103,7 @@
 }
 
 .title {
-  color: #551c84c4 !important;
+  color: #6a5778 !important;
   font-size: 1.5rem;
   font-weight: 800;
   margin-bottom: 0.5rem; /* Отступ под заголовком */
@@ -122,21 +122,7 @@
 }
 
 .price {
-  color: #551c84c4 !important;
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin: 2rem 0 0 0;
-}
-
-.priceContainer {
-  display: flex;
-  align-items: center;
-  gap: 20rem;
-  margin: 1rem 0 0 0;
-}
-
-.price {
-  color: #551c84c4 !important;
+  color: #6a5778 !important;
   font-size: 1.5rem;
   font-weight: 600;
   margin: 0;
@@ -145,7 +131,7 @@
 .installmentButton {
   border: none;
   color: #ffffff;
-  background: #bc7eff6f;
+  background: #d6d0da;
   padding: 0.4rem 0.8rem;
   border-radius: 7px;
   font-size: 0.8rem;
@@ -155,38 +141,44 @@
 }
 
 .installmentButton:hover {
-  background: #ac61fc6f;
+  background: #d6d0da;
   border: none;
   color: #ffffff;
 }
 
 .typeImages {
-  margin: 2rem 0 1rem;
+  margin: 1.5rem 0;
 }
 
 .typeLabel {
   font-size: 0.9rem;
-  color: #b1a0b8;
+  color: #666;
   margin-bottom: 0.5rem;
 }
 
 .imagesContainer {
   display: flex;
   gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.typeImageWrapper {
+  border: 2px solid transparent;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.typeImageWrapper:hover {
+  border-color: #d6d0da;
 }
 
 .typeImage {
-  width: 65px;
-  height: 65px;
+  width: 60px;
+  height: 60px;
   object-fit: cover;
   border-radius: 4px;
-  border: 1px solid #dddddd;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-}
-
-.typeImage:hover {
-  transform: scale(1.1);
+  display: block;
 }
 
 .divider {
@@ -225,15 +217,8 @@
 }
 
 .sizeButton:hover {
-  color: #9a3cff95;
+  color: #af94bbc2;
   text-decoration: underline;
-}
-
-.buttonsContainer {
-  display: flex;
-  gap: 2rem;
-  align-items: center;
-  margin-top: 0;
 }
 
 .button {
@@ -252,37 +237,18 @@
 
 /* Состояние "в корзине" */
 .button.inCart {
-  background: #501e78c4;
+  background: #6a5778;
   color: #ffffff;
 }
 
 .button:hover {
-  background: #501e78c4;
+  background: #6a5778;
   backdrop-filter: blur(3px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .button.inCart:hover {
   background: #5f4a68; 
-}
-
-.heartButton {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  padding: 0.5rem;
-  border-radius: 50%;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-}
-
-.heartButton:hover {
-  background: none;
 }
 
 .sizeButton {

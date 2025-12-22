@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom'
 const CardPage = () => {
   const navigate = useNavigate()
 
-  const handleCardClick = () => {
-    navigate('/catalog') // Переход в каталог
+  const handleCardClick = (category: string) => {
+    navigate(`/catalog?category=${category}`)
   }
 
   return (
@@ -20,39 +20,51 @@ const CardPage = () => {
         gap: '20px',
         flexWrap: 'wrap'
       }}>
-        {/* Карточка 1 */}
+        {/* Карточка 1 - Верх */}
         <div style={{ flex: '1 0 200px' }}>
           <Card 
-            title="Платье вечернее"
+            title="Верх"
             children={null}
-            onArrowClick={handleCardClick} // Передаем функцию
+            category="верх"
+            description="Верхние ноты вашего образа. \nБаза для самовыражения."
+            onArrowClick={() => handleCardClick('верх')}
+            imageAlt="Верхняя одежда"
           />
         </div>
         
-        {/* Карточка 2 */}
+        {/* Карточка 2 - Низ */}
         <div style={{ flex: '1 0 200px' }}>
           <Card 
-            title="Костюм деловой"
+            title="Низ"
             children={null}
-            onArrowClick={handleCardClick} // Передаем функцию
+            category="низ"
+            description="База, которая сочетается с любым верхом, \nпревращая простую комбинацию в продуманный лук."
+            onArrowClick={() => handleCardClick('низ')}
+            imageAlt="Верхняя одежда"
           />
         </div>
         
-        {/* Карточка 3 */}
+        {/* Карточка 3 - Платья */}
         <div style={{ flex: '1 0 200px' }}>
           <Card 
-            title="Блузка шелковая"
+            title="Платья"
             children={null}
-            onArrowClick={handleCardClick} // Передаем функцию
+            category="платья"
+            description="Готовые истории в одном флаконе. Каждое платье \nэто законченный образ, настроение и обещание прекрасного момента."
+            onArrowClick={() => handleCardClick('платья')}
+            imageAlt="Верхняя одежда"
           />
         </div>
         
-        {/* Карточка 4 */}
+        {/* Карточка 4 - Обувь */}
         <div style={{ flex: '1 0 200px' }}>
           <Card 
-            title="Юбка миди"
+            title="Туфли"
             children={null}
-            onArrowClick={handleCardClick} // Передаем функцию
+            category="обувь"
+            description="Финальный аккорд. \nТо, на чем держится и завершается любой образ. "
+            onArrowClick={() => handleCardClick('обувь')}
+            imageAlt="Верхняя одежда"
           />
         </div>
       </div>

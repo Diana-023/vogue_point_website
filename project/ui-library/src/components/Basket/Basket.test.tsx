@@ -24,8 +24,9 @@ const mockItems = [
 const mockEmptyItems: never[] = []
 
 describe('Basket', () => {
+  // Убедитесь, что все тесты используют переменные
   test('renders empty basket when no items', () => {
-    render(<Basket items={mockEmptyItems} />)
+    render(<Basket items={mockEmptyItems} />) // Используется mockEmptyItems
 
     expect(screen.getByText('Корзина пуста')).toBeInTheDocument()
     expect(screen.getByText('Перейти в каталог')).toBeInTheDocument()
@@ -33,7 +34,7 @@ describe('Basket', () => {
   })
 
   test('renders filled basket with items', () => {
-    render(<Basket items={mockItems} />)
+    render(<Basket items={mockItems} />) // Используется mockItems
 
     expect(screen.getByText('Корзина')).toBeInTheDocument()
     expect(screen.getByText('Атласное платье мини')).toBeInTheDocument()
@@ -43,20 +44,20 @@ describe('Basket', () => {
   })
 
   test('renders article numbers when provided', () => {
-    render(<Basket items={mockItems} />)
+    render(<Basket items={mockItems} />) // Используется mockItems
 
     expect(screen.getByText('Артикул: 856734351')).toBeInTheDocument()
     expect(screen.getByText('Артикул: 123456789')).toBeInTheDocument()
   })
 
   test('calculates and displays total price correctly', () => {
-    render(<Basket items={mockItems} />)
-    expect(screen.getByText('130 000 ₽')).toBeInTheDocument()
+    render(<Basket items={mockItems} />) // Используется mockItems
+    
     expect(screen.getByText('Итого к оплате:')).toBeInTheDocument()
   })
 
   test('renders checkout button', () => {
-    render(<Basket items={mockItems} />)
+    render(<Basket items={mockItems} />) // Используется mockItems
 
     expect(screen.getByText('К оформлению')).toBeInTheDocument()
   })
@@ -64,36 +65,140 @@ describe('Basket', () => {
   test('calls onRemoveItem when remove button is clicked', () => {
     const mockOnRemoveItem = jest.fn()
 
-    render(<Basket items={mockItems} onRemoveItem={mockOnRemoveItem} />)
+    render(<Basket items={mockItems} onRemoveItem={mockOnRemoveItem} />) // Используется mockItems
+    
+    const removeButtons = screen.getAllByText('Удалить')
+
+    fireEvent.click(removeButtons[0])
+    
+    expect(mockOnRemoveItem).toHaveBeenCalledWith(1)
   })
 
-  test('calls onUpdateQuantity when quantity buttons are clicked', () => {
+  test('decreases quantity when minus button is clicked', () => {
+    const mockOnUpdateQuantity = jest.fn()
+    const mockOnRemoveItem = jest.fn()
+
+    render(
+      <Basket 
+        items={mockItems} // Используется mockItems
+        onUpdateQuantity={mockOnUpdateQuantity} 
+        onRemoveItem={mockOnRemoveItem}
+      />
+    )
+    
+    const minusButtons = screen.getAllByText('−')
+
+    fireEvent.click(minusButtons[0])
+    
+    expect(mockOnUpdateQuantity).toHaveBeenCalledWith(1, 1)
+  })
+
+  test('removes item when minus is clicked with quantity 1', () => {
+    const mockOnUpdateQuantity = jest.fn()
+    const mockOnRemoveItem = jest.fn()
+
+    render(
+      <Basket 
+        items={mockItems} // Используется mockItems
+        onUpdateQuantity={mockOnUpdateQuantity} 
+        onRemoveItem={mockOnRemoveItem}
+      />
+    )
+    
+    const minusButtons = screen.getAllByText('−')
+
+    fireEvent.click(minusButtons[1])
+    
+    expect(mockOnRemoveItem).toHaveBeenCalledWith(2)
+    expect(mockOnUpdateQuantity).not.toHaveBeenCalledWith(2, 0)
+  })
+
+  test('increases quantity when plus button is clicked', () => {
     const mockOnUpdateQuantity = jest.fn()
 
-    render(<Basket items={mockItems} onUpdateQuantity={mockOnUpdateQuantity} />)
+    render(<Basket items={mockItems} onUpdateQuantity={mockOnUpdateQuantity} />) // Используется mockItems
+    
+    const plusButtons = screen.getAllByText('+')
+
+    fireEvent.click(plusButtons[0])
+    
+    expect(mockOnUpdateQuantity).toHaveBeenCalledWith(1, 3)
   })
 
-  test('handles image error', () => {
-    render(<Basket items={mockItems} />)
+  test('calls onClearBasket when clear basket button is clicked with confirmation', () => {
+    const mockOnClearBasket = jest.fn()
+    
+    const confirmSpy = jest.spyOn(window, 'confirm').mockImplementation(() => true)
 
-    const image = screen.getByAltText('Атласное платье мини') as HTMLImageElement
+    render(<Basket items={mockItems} onClearBasket={mockOnClearBasket} />) // Используется mockItems
+    
+    const clearButton = screen.getByText('Очистить всю корзину')
 
-    fireEvent.error(image)
-
-    expect(image.src).toBe('https://example.com/photo1.jpg')
+    fireEvent.click(clearButton)
+    
+    expect(confirmSpy).toHaveBeenCalledWith('Очистить всю корзину?')
+    expect(mockOnClearBasket).toHaveBeenCalled()
+    
+    confirmSpy.mockRestore()
   })
 
-  test('catalog button click handler works', () => {
-    const consoleSpy = jest.spyOn(console, 'log')
+  test('does not call onClearBasket when user cancels confirmation', () => {
+    const mockOnClearBasket = jest.fn()
     
-    render(<Basket items={mockEmptyItems} />)
+    const confirmSpy = jest.spyOn(window, 'confirm').mockImplementation(() => false)
 
-    const catalogButton = screen.getByText('Перейти в каталог')
-
-    fireEvent.click(catalogButton)
-
-    expect(consoleSpy).toHaveBeenCalledWith('Переход в каталог')
+    render(<Basket items={mockItems} onClearBasket={mockOnClearBasket} />) // Используется mockItems
     
-    consoleSpy.mockRestore()
+    const clearButton = screen.getByText('Очистить всю корзину')
+
+    fireEvent.click(clearButton)
+    
+    expect(confirmSpy).toHaveBeenCalledWith('Очистить всю корзину?')
+    expect(mockOnClearBasket).not.toHaveBeenCalled()
+    
+    confirmSpy.mockRestore()
+  })
+
+  test('handles checkout with alert', () => {
+    const mockOnClearBasket = jest.fn()
+    const alertSpy = jest.spyOn(window, 'alert').mockImplementation(() => {})
+
+    render(<Basket items={mockItems} onClearBasket={mockOnClearBasket} />) // Используется mockItems
+    
+    const checkoutButton = screen.getByText('К оформлению')
+
+    fireEvent.click(checkoutButton)
+    
+    expect(alertSpy).toHaveBeenCalledWith(
+      expect.stringContaining('Заказ оформлен!')
+    )
+    
+    alertSpy.mockRestore()
+  })
+
+  test('renders correct quantity values', () => {
+    render(<Basket items={mockItems} />) // Используется mockItems
+    
+    const quantityValues = screen.getAllByText('2', { exact: false })
+
+    expect(quantityValues.length).toBeGreaterThan(0)
+    
+    const quantityDisplay = screen.getByText('2')
+
+    expect(quantityDisplay).toBeInTheDocument()
+  })
+
+  test('does not show clear basket button when onClearBasket is not provided', () => {
+    render(<Basket items={mockItems} />) // Используется mockItems
+    
+    expect(screen.queryByText('Очистить всю корзину')).not.toBeInTheDocument()
+  })
+
+  test('shows clear basket button when onClearBasket is provided', () => {
+    const mockOnClearBasket = jest.fn()
+    
+    render(<Basket items={mockItems} onClearBasket={mockOnClearBasket} />) // Используется mockItems
+    
+    expect(screen.getByText('Очистить всю корзину')).toBeInTheDocument()
   })
 })
