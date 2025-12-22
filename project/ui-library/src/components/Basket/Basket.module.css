@@ -11,7 +11,7 @@
   overflow: hidden;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  background: #faf6ff;
+  background: #d6d0da;
 }
 
 .emptyBasketIcon {
@@ -25,7 +25,7 @@
 }
 
 .catalogButton {
-  background: #bc7eff6f;
+  background: #af94bbc2;
   color: #ffffff;
   border: none;
   padding: 0.75rem 1.5rem;
@@ -36,7 +36,7 @@
 }
 
 .catalogButton:hover {
-  background: #551c84c4;
+  background: #af94bbc2;
   color: white;
 }
 
@@ -47,16 +47,16 @@
   display: flex;
   width: 100%;
   min-height: 100vh;
-  overflow: hidden;
+  overflow-y: auto;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  background: #faf6ff;
+  background: #d6d0da;
   flex-direction: column;
 }
 
 /* Заголовок */
 .basketTitle {
-  color: #551c84c4;
+  color: #82638fc2;
   font-size: 2rem;
   font-weight: 800;
   margin-bottom: 2rem; /* Отступ под заголовком */
@@ -79,7 +79,7 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  padding: 0 4rem; /* ← Добавь горизонтальные отступы контейнеру */
+  padding: 0 4rem;
   box-sizing: border-box;
 }
 
@@ -87,7 +87,7 @@
   display: flex;
   align-items: center;
   gap: 5rem;
-  padding: 0 0; /* ← Добавь горизонтальные отступы */
+  padding: 0 0; 
   width: 100%; /* ← Ширина 100% */
   box-sizing: border-box; /* ← Чтобы padding не увеличивал ширину */
 }
@@ -108,20 +108,20 @@
 .itemDetails h3 {
   margin: 0 0 0.5rem 0;
   font-size: 1.1rem;
-  color: #551c84c4;
+  color: #82638fc2;
 }
 
 .itemDescription {
   margin: 0;
   color: #666;
-  font-size: 0.8rem; /* ← Меньший размер шрифта */
-  font-style: italic; /* ← Можно курсивом */
+  font-size: 0.8rem;
+  font-style: italic; 
 }
 
 .itemPrice {
   font-size: 1.1rem;
   font-weight: 600;
-  color: #551c84c4;
+  color: #82638fc2;
   flex-shrink: 0;
   min-width: 100px;
   text-align: right;
@@ -145,12 +145,12 @@
 
 .totalAmount {
   font-weight: 600;
-  color: #551c84c4;
+  color: #82638fc2;
   font-size: 1.2rem;
 }
 
 .checkoutButton {
-  background: #a469e46f;
+  background: #af94bbc2;
   color: white;
   border: none;
   padding: 1rem 2rem;
@@ -162,5 +162,105 @@
 }
 
 .checkoutButton:hover {
-  background: #6a2ca0;
+  background: #af94bbc2;
+}
+
+/* Блок с количеством и кнопкой удаления */
+.quantityAndRemove {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-right: 2rem;
+}
+
+/* Элементы управления количеством */
+.quantityControls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.quantityButton {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid #a469e46f;
+  background: white;
+  color: #551c84c4;
+  font-size: 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.quantityButton:hover {
+  background: #af94bbc2;
+  color: white;
+  border-color: #82698dc2;
+}
+
+.quantityValue {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #82698dc2;
+  min-width: 30px;
+  text-align: center;
+}
+
+/* Кнопка удаления */
+.deleteButton {
+  background: #82698dc2;
+  color: #ffffff;
+  align-items: center;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  margin-top: 12px; 
+}
+
+.deleteButton:hover {
+  background: #ffffff;
+  color: #82698dc2;
+}
+
+.itemSize {
+  color: #666;
+  font-size: 0.9rem;
+  margin-left: 0.5rem;
+  font-style: italic;
+}
+
+.clearBasketWrapper {
+  display: flex;
+  justify-content: center;
+  padding: 20px 0;
+  width: 100%;
+}
+
+.clearBasketButton {
+  background: #82698dc2;
+  color: #ffffff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin: 10px;
+}
+
+.clearBasketButton:hover {
+  background: #6f5778;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }

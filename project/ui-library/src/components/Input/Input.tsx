@@ -16,7 +16,7 @@ export interface InputProps {
 export const Input: React.FC<InputProps> = ({ 
   onSubmit,
   className = '',
-  title = 'Я ХОЧУ ПОЛУЧАТЬ ИНФОРМАЦИЮ О НОВИНКАХ И ЭКСКЛЮЗИВНЫХ ПРЕДЛОЖЕНИЯХ!'
+  title = 'I WANT TO GET INFORMATION ABOUT NEW ARRIVALS AND EXCLUSIVE OFFERS!'
 }) => {
   const [formData, setFormData] = useState({
     name: '',
@@ -42,8 +42,7 @@ export const Input: React.FC<InputProps> = ({
     if (onSubmit) {
       onSubmit(formData)
     }
-    
-    // Можно оставить alert или убрать его
+
     alert('Данные отправлены!')
   }
 
@@ -59,7 +58,7 @@ export const Input: React.FC<InputProps> = ({
         <form className="input" onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="name" className="form-label">
-              Имя
+              name
             </label>
             <input
               type="text"
@@ -75,7 +74,7 @@ export const Input: React.FC<InputProps> = ({
 
           <div className="form-group">
             <label htmlFor="email" className="form-label">
-              E-mail
+              email
             </label>
             <input
               type="email"
@@ -91,7 +90,7 @@ export const Input: React.FC<InputProps> = ({
 
           <div className="form-group">
             <label htmlFor="phone" className="form-label">
-              Телефон
+              phone
             </label>
             <input
               type="tel"
@@ -107,7 +106,7 @@ export const Input: React.FC<InputProps> = ({
 
           <div className="form-group">
             <label htmlFor="password" className="form-label">
-              Пароль
+              password
             </label>
             <input
               type="password"
@@ -131,12 +130,12 @@ export const Input: React.FC<InputProps> = ({
               className="form-checkbox"
             />
             <label htmlFor="subscribe" className="checkbox-label">
-              Я согласна на обработку персональных данных
+              I agree to the processing of personal data
             </label>
           </div>
 
           <button type="submit" className="submit-btn">
-            ОТПРАВИТЬ
+            SEND
           </button>
         </form>
       </div>

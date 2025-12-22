@@ -40,7 +40,6 @@ project/frontend/
 project/ui-library/
 ├── src/
 │   ├── components/
-│   │   ├── AboutLink/
 │   │   ├── Basket/
 │   │   ├── Card/
 │   │   ├── Contacts/
